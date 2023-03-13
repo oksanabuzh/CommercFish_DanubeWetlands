@@ -1,0 +1,10 @@
+"","Nat.LndCov.Ext","Nat.LndCov.Div","Nat.Bank","Nat.Littor.Zone","Littor.Habitat.Ext","Littor.Habitat.Div","Macroph_SR","Macroph_Cover","Macroph_Invas.Prcnt"
+"Nat.LndCov.Ext",1,0.74,0.11,0.16,-0.05,-0.08,-0.3,-0.21,-0.19
+"Nat.LndCov.Div",0.74,1,-0.26,-0.21,-0.45,-0.24,-0.35,-0.31,-0.03
+"Nat.Bank",0.11,-0.26,1,0.67,0.43,0.34,0.07,0.14,0.06
+"Nat.Littor.Zone",0.16,-0.21,0.67,1,0.3,-0.13,0.09,0.18,0.16
+"Littor.Habitat.Ext",-0.05,-0.45,0.43,0.3,1,0.44,0.13,0.18,-0.07
+"Littor.Habitat.Div",-0.08,-0.24,0.34,-0.13,0.44,1,-0.23,-0.18,-0.17
+"Macroph_SR",-0.3,-0.35,0.07,0.09,0.13,-0.23,1,0.96,0.4
+"Macroph_Cover",-0.21,-0.31,0.14,0.18,0.18,-0.18,0.96,1,0.43
+"Macroph_Invas.Prcnt",-0.19,-0.03,0.06,0.16,-0.07,-0.17,0.4,0.43,1
