@@ -1,4 +1,4 @@
-# Drivers of commercial fishes in Wetlands in Serbia 
+# Drivers of commercial fishes in Wetlands 
 
 # response "Fish species richness"
 
@@ -170,9 +170,9 @@ fit_Macroph_Invas.Prcnt <- newdat1 %>%
 library(ggplot2)
 
 ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) + 
-  geom_jitter(aes(fill=Ecosystem), width =0.2, color="black", pch=21, size=3)+
+  geom_jitter(aes(fill=Ecosystem), width =1, color="black", pch=21, size=3)+
   labs(x ="Invasive macrophytes, %", y="Fish species richness") +
-  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  scale_fill_manual(values=c("#66C2A5", "coral"))+
   geom_line(data = fit_Macroph_Invas.Prcnt, 
             aes(y=fit), 
             color = "black", linewidth=1)+
@@ -187,21 +187,26 @@ ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) +
 ####-
 # Ecosystem type----
 
-ggplot(k.data, aes(y=Fish_SpRich, x=Ecosystem, fill=Ecosystem)) + 
-  #geom_violin(trim=F)+
-  geom_boxplot(width=0.1, fill="white")+
-  scale_fill_brewer(palette="Dark2") +
- # scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
-   geom_jitter(width = 0.2, color="black", pch=21)+
+Data_EcosType <- k.data %>% # the names of the new data frame and the data frame to be summarised
+  group_by(Ecosystem) %>%   # the grouping variable
+  summarise(mean_PL = mean(Fish_SpRich),  # calculates the mean of each group
+            sd_PL = sd(Fish_SpRich), # calculates the standard deviation of each group
+            n_PL = n(),  # calculates the sample size per group
+            SE_PL = sd(Fish_SpRich)/sqrt(n())) 
+Data_EcosType
+
+ggplot(Data_EcosType) +
+  geom_bar( aes(x=Ecosystem, y=mean_PL, fill=Ecosystem), stat="identity", size=0.3, color="black") +
+  geom_errorbar(aes(x=Ecosystem,ymin = mean_PL - SE_PL, ymax = mean_PL + SE_PL), width=0.2)+
+ scale_fill_manual(values=c("#66C2A5", "coral"))+
   labs(x ="System type", y="Fish species richness") +
-  theme_minimal() +
+  theme_bw()+
   theme(axis.text.y=element_text(colour = "black", size=13),
         axis.text.x=element_text(colour = "black", size=13),
         axis.title=element_text(size=15),
         axis.line = element_line(colour = "black"),
         axis.ticks =  element_line(colour = "black")) +
-  scale_color_discrete(labels=c('Plot-specific soil', 'Standard soil'))+
-  labs(fill='Litter type')
+labs(fill='System type')
 
 
 #########-

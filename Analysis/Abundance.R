@@ -143,7 +143,7 @@ library(ggplot2)
 ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.2, color="black", pch=21, size=3)+
   labs(x ="Extent of littoral habitat", y="Fish abundance") +
-  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  scale_fill_manual(values=c("#66C2A5", "coral"))+
   geom_line(data = fit_for_Littor.Habitat.Ext, 
             aes(y=fit), 
             color = "black", linewidth=1)+
@@ -180,7 +180,7 @@ library(ggplot2)
 ggplot(k.data, aes(Macroph_Cover, Fish_abundance)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.1, color="black", pch=21, size=2.5)+
   labs(x ="Macrophyte cover", y="Fish abundance") +
-  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  scale_fill_manual(values=c("#66C2A5", "coral"))+
   geom_line(data = fit_for_Macroph_Cover, 
             aes(y=fit), 
             color = "black", linewidth=1)+
