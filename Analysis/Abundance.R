@@ -1,4 +1,4 @@
-# Drivers of commercial fishes in Wetlands
+# Drivers of commercial fishes in wetlands
 
 # response "Fish Abundance"
 
@@ -89,7 +89,7 @@ qqline(resid(mod1b))
 resid_pearson <- residuals(mod1, type = "pearson")
 SSQ <- sum(resid_pearson^2)
 SSQ/df.residual(mod1) 
-# we have clear overdispersion
+# [1] 3.275376 -  we have clear overdispersion
 
 ###--
 # using quasipoisson family to account for the data overdispersion
@@ -119,30 +119,78 @@ write.csv(Anova(mod1b, type="2"),  file = "Results/Chisq_glmm_abundance_Mod1.csv
 
 
 # plot significant effects
-library(ggeffects)
-ggeffects::install_latest()
-remotes::install_github("easystats/insight")
 
-k.data$Ecosystem <- factor(k.data$Ecosystem)
+## Littor.Habitat.Ext ----
 
-m1 <- glmmPQL(Fish_abundance ~ 
-                   Macroph_Cover ,
-                 random = ~ 1 | System,  
-                 data = k.data, 
-                 family = quasipoisson(link="log"))
+newdat1 <- expand_grid(
+  Littor.Habitat.Ext = min(k.data$Littor.Habitat.Ext):max(k.data$Littor.Habitat.Ext),
+  Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
+  Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
+  Littor.Habitat.Div= mean(k.data$Littor.Habitat.Div),
+ Macroph_Cover= mean(k.data$Macroph_Cover), 
+  Macroph_Invas.Prcnt= mean(k.data$Macroph_Invas.Prcnt),
+  Ecosystem = unique(k.data$Ecosystem))
 
 
-library(insight)
+newdat1$fit <- as.vector(predict(mod1b, type = "response",  newdata = newdat1, level=0))
 
-ggeffects::ggpredict(m1, "Macroph_Cover", type = "fe")
-mydf <- ggpredict(m1, terms = "Macroph_Cover")
+fit_for_Littor.Habitat.Ext <- newdat1 %>% 
+  pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
+  mutate(fit=(pond+lake)/2)
 
-mydf <- ggpredict(mod1b, "Macroph_Cover", ci.lvl = NA)
-plot(mydf)
+library(ggplot2)
 
-mydf$predicted
-mydf$conf.low
-mydf$conf.high
+ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) + 
+  geom_jitter(aes(fill=Ecosystem), width =0.2, color="black", pch=21, size=3)+
+  labs(x ="Extent of littoral habitat", y="Fish abundance") +
+  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  geom_line(data = fit_for_Littor.Habitat.Ext, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
+
+
+
+## Macroph_Cover ----
+
+newdat2 <- expand_grid(
+  Macroph_Cover= min(k.data$Macroph_Cover):max(k.data$Macroph_Cover), 
+  Littor.Habitat.Ext = mean(k.data$Littor.Habitat.Ext),
+  Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
+  Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
+  Littor.Habitat.Div= mean(k.data$Littor.Habitat.Div),
+  Macroph_Invas.Prcnt= mean(k.data$Macroph_Invas.Prcnt),
+  Ecosystem = unique(k.data$Ecosystem))
+
+
+newdat2$fit <- as.vector(predict(mod1b, type = "response",  newdata = newdat2, level=0))
+
+fit_for_Macroph_Cover <- newdat2 %>% 
+  pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
+  mutate(fit=(pond+lake)/2)
+
+library(ggplot2)
+
+ggplot(k.data, aes(Macroph_Cover, Fish_abundance)) + 
+  geom_jitter(aes(fill=Ecosystem), width =0.1, color="black", pch=21, size=2.5)+
+  labs(x ="Macrophyte cover", y="Fish abundance") +
+  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  geom_line(data = fit_for_Macroph_Cover, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
 
 
 
@@ -204,7 +252,7 @@ SSQ/df.residual(mod2)
 library(MASS)
 
 mod2b <- glmmPQL(Fish_abundance ~ A  + B + C  + D  + E  + F  + G  + H,
-                 random = ~ 1 | System, data = k.data, 
+                 random = ~ 1 | System, data = df2, 
                  family = "quasipoisson") 
 
 plot(mod2b)
@@ -222,5 +270,44 @@ r.squaredGLMM(mod2b)
 
 write.csv(coef(summary(mod2b)),  file = "Results/Coefs_glmm_abundance_Mod2.csv")
 write.csv(Anova(mod2b, type="2"),  file = "Results/Chisq_glmm_abundance_Mod2.csv")
+
+# Plot significant predictor:
+## E ----
+
+newdat3 <- expand_grid(
+  E= min(k.data$E):max(k.data$E), 
+  A = mean(k.data$A),
+  B = mean(k.data$B),
+  C = mean(k.data$C),
+  D= mean(k.data$D),
+  F= mean(k.data$F),
+  G= mean(k.data$G),
+  H= mean(k.data$H))
+
+
+newdat3$fit <- as.vector(predict(mod2b, type = "response",  newdata = newdat3, level=0))
+
+fit_for_Macroph_Cover <- newdat2 %>% 
+  pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
+  mutate(fit=(pond+lake)/2)
+
+library(ggplot2)
+
+ggplot(k.data, aes(E, Fish_abundance)) + 
+  geom_jitter(aes(fill=Ecosystem), width =0.1, color="black", pch=21, size=2.5)+
+  labs(x ="Submerged fine and 
+dissected macrophytes", y="Fish abundance") +
+  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  geom_line(data = newdat3, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
+
 
 # End
