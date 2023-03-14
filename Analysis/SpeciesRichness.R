@@ -147,6 +147,63 @@ write.csv(coef(summary(mod1b)),  file = "Results/Coefs_glm_SR_Mod1.csv")
 write.csv(Anova(mod1b, type="2"),  file = "Results/Chisq_glm_SR_Mod1.csv")
 
 
+
+## Macroph_Invas.Prcnt ----
+
+newdat1 <- expand_grid(
+  Macroph_Invas.Prcnt= min(k.data$Macroph_Invas.Prcnt):max(k.data$Macroph_Invas.Prcnt),
+  Fish_abundance  = mean(k.data$Fish_abundance ),
+  Littor.Habitat.Ext = mean(k.data$Littor.Habitat.Ext),
+  Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
+  Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
+  Littor.Habitat.Div= mean(k.data$Littor.Habitat.Div),
+  Macroph_Cover= mean(k.data$Macroph_Cover), 
+  Ecosystem = unique(k.data$Ecosystem))
+
+
+newdat1$fit <- predict(mod1b, type = "response",  newdata = newdat1)
+
+fit_Macroph_Invas.Prcnt <- newdat1 %>% 
+  pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
+  mutate(fit=(pond+lake)/2)
+
+library(ggplot2)
+
+ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) + 
+  geom_jitter(aes(fill=Ecosystem), width =0.2, color="black", pch=21, size=3)+
+  labs(x ="Invasive macrophytes, %", y="Fish species richness") +
+  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  geom_line(data = fit_Macroph_Invas.Prcnt, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
+
+####-
+# Ecosystem type----
+
+ggplot(k.data, aes(y=Fish_SpRich, x=Ecosystem, fill=Ecosystem)) + 
+  #geom_violin(trim=F)+
+  geom_boxplot(width=0.1, fill="white")+
+  scale_fill_brewer(palette="Dark2") +
+ # scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+   geom_jitter(width = 0.2, color="black", pch=21)+
+  labs(x ="System type", y="Fish species richness") +
+  theme_minimal() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  scale_color_discrete(labels=c('Plot-specific soil', 'Standard soil'))+
+  labs(fill='Litter type')
+
+
 #########-
 
 # Model 2----
