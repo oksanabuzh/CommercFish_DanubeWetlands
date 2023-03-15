@@ -1,6 +1,6 @@
-# Drivers of commercial fishes in Wetlands in Serbia 
+# Drivers of commercial fishes in Wetlands
 
-# response "% of insectivore fishes out of total fish abundance"
+# response "% of insectivore fishes out of the total fish abundance"
 
 rm(list=ls(all=TRUE))
 
@@ -75,13 +75,13 @@ ggplot(k.data, aes(Macroph_Invas.Prcnt, INS_prcnt)) + geom_point()
 # includes all non-correlated predictors
 
 mod1 <-  glmer ( INS_prcnt ~  
-                    Ecosystem + 
-                   # Nat.LndCov.Ext +  # Nat.Littor.Zone + 
-                  #  Littor.Habitat.Ext + 
-                  # Littor.Habitat.Div + 
-                  # Macroph_Cover +  # Macroph_Invas.Prcnt  +
+                    # Ecosystem + 
+                      Nat.LndCov.Ext + # Nat.Littor.Zone + 
+                   #  Littor.Habitat.Ext + 
+                    Littor.Habitat.Div + 
+                    Macroph_Cover +  Macroph_Invas.Prcnt  +
                     (1 | System), data = k.data,
-                  control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=10000000)),
+                  control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=10000)),
                   family = "binomial", weights = Fish_abundance)
 
 summary(mod1)
@@ -89,10 +89,9 @@ summary(mod1)
 # multicolinearity:
 car::vif(mod1)
 
-r.squaredGLMM(mod1)
-
+# results
 Anova(mod1)
-
+r.squaredGLMM(mod1)
 
 
 # residuals:
@@ -111,8 +110,9 @@ SSQ/df.residual(mod1)
 car::Anova(mod1)
 r.squaredGLMM(mod1)
 
-write.csv(coef(summary(mod1)),  file = "Results/Coefs_glmm_OMN_Mod1.csv")
-write.csv(Anova(mod1, type="2"),  file = "Results/Chisq_glmm_OMN_Mod1.csv")
+write.csv(coef(summary(mod1)),  file = "Results/Coefs_glmm_INS_Mod1.csv")
+write.csv(Anova(mod1, type="2"),  file = "Results/Chisq_glmm_INS_Mod1.csv")
+
 
 
 #########-
@@ -146,7 +146,7 @@ ggplot(k.data, aes(H, INS_prcnt)) + geom_point()
 # mixed effects models
 
 mod2 = glmer (INS_prcnt ~ A  + B + C  + D  + E  + F  + G  + H +
-                    (1|System), data = df2, 
+                    (1|System), data = k.data, 
              control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=100000)),
               family = "binomial", weights = Fish_abundance)
 
@@ -170,9 +170,49 @@ SSQ/df.residual(mod2)
 car::Anova(mod2)
 #R2
 r.squaredGLMM(mod2)
-piecewiseSEM::rsquared(mod2)
 
-write.csv(coef(summary(mod2)),  file = "Results/Coefs_glmm_OMN_Mod2.csv")
-write.csv(Anova(mod2, type="2"),  file = "Results/Chisq_glmm_OMN_Mod2.csv")
+
+####
+write.csv(coef(summary(mod2)),  file = "Results/Coefs_glmm_INS_Mod2.csv")
+write.csv(Anova(mod2, type="2"),  file = "Results/Chisq_glmm_INS_Mod2.csv")
+
+
+
+# Plot significant predictor:
+## E ----
+
+newd <- expand_grid(
+  D= (-0.1*55):max(k.data$D*55), 
+  A = mean(k.data$A),
+  B = mean(k.data$B),
+  C = mean(k.data$C),
+  E= mean(k.data$E),
+  F= mean(k.data$F),
+  G= mean(k.data$G),
+  H= mean(k.data$H))
+
+newdat3 <- newd %>% 
+  mutate(D=D/55)
+
+
+newdat3$fit <- predict(mod2, type = "response",  newdata = newdat3, re.form = NA)
+
+
+library(ggplot2)
+
+ggplot(k.data, aes(D, INS_prcnt)) + 
+  geom_jitter(aes(fill=Ecosystem), height=0.1, width =0.3, fill="#FFAA19", color="black", pch=21, size=3)+
+  labs(x ="Free-floating macrophytes", y="Proportion of insectivores") +
+  geom_line(data = newdat3, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
+
 
 # End

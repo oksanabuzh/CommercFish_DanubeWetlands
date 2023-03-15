@@ -275,7 +275,7 @@ write.csv(Anova(mod2b, type="2"),  file = "Results/Chisq_glmm_abundance_Mod2.csv
 ## E ----
 
 newdat3 <- expand_grid(
-  E= min(k.data$E):max(k.data$E), 
+  E=seq(from = min(k.data$E),to=max(k.data$E), by=0.01),
   A = mean(k.data$A),
   B = mean(k.data$B),
   C = mean(k.data$C),
@@ -287,17 +287,14 @@ newdat3 <- expand_grid(
 
 newdat3$fit <- as.vector(predict(mod2b, type = "response",  newdata = newdat3, level=0))
 
-fit_for_Macroph_Cover <- newdat2 %>% 
-  pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
-  mutate(fit=(pond+lake)/2)
 
 library(ggplot2)
 
 ggplot(k.data, aes(E, Fish_abundance)) + 
-  geom_jitter(aes(fill=Ecosystem), width =0.1, color="black", pch=21, size=2.5)+
+  geom_jitter(aes(fill=Ecosystem), height=0.5, width =0.5, color="black", pch=21, size=2.5)+
   labs(x ="Submerged fine and 
 dissected macrophytes", y="Fish abundance") +
-  scale_fill_manual(values=c("#66C2A5", "#E3F84A"))+
+  scale_fill_manual(values=c("#66C2A5", "coral"))+
   geom_line(data = newdat3, 
             aes(y=fit), 
             color = "black", linewidth=1)+

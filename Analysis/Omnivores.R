@@ -108,7 +108,7 @@ write.csv(Anova(mod1, type="2"),  file = "Results/Chisq_glmm_OMN_Mod1.csv")
 # Littor.Habitat.Div ----
 
 newd <- expand_grid(
-  Littor.Habitat.Div= (0.8*55):(3.2*55),
+  Littor.Habitat.Div= (0.9*55):(3.1*55),
   Littor.Habitat.Ext = mean(k.data$Littor.Habitat.Ext),
   Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
   Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
@@ -119,7 +119,7 @@ newd <- expand_grid(
 newdat1 <- newd %>% 
   mutate(Littor.Habitat.Div=Littor.Habitat.Div/55)
 
-newdat1$fit <- (predict(mod1, type = "response",  newdata = newdat1, re.form = NA))
+newdat1$fit <- predict(mod1, type = "response",  newdata = newdat1, re.form = NA)
 
 fit_for_Littor.Habitat.Div <- newdat1 %>% 
   pivot_wider(names_from = Ecosystem, values_from = fit) %>% 
@@ -128,7 +128,7 @@ fit_for_Littor.Habitat.Div <- newdat1 %>%
 library(ggplot2)
 
 ggplot(k.data, aes(Littor.Habitat.Div, OMN_prcnt)) + 
-  geom_jitter(aes(fill=Ecosystem), width =0.25, fill="blue", color="black", pch=21, size=3)+
+  geom_jitter(aes(fill=Ecosystem), width =0.21, fill="blue", color="black", pch=21, size=3)+
   labs(x ="Diversity of littoral habitat", y="Proportion of omnivores") +
   # scale_fill_manual(values=c("#66C2A5", "coral"))+
   geom_line(data = fit_for_Littor.Habitat.Div, 

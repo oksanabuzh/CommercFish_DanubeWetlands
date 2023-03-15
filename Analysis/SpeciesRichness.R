@@ -302,4 +302,43 @@ write.csv(coef(summary(mod2b)),  file = "Results/Coefs_glm_SR_Mod2.csv")
 write.csv(Anova(mod2b, type="2"),  file = "Results/Chisq_glm_SR_Mod2.csv")
 
 
+# Plot significant predictor:
+## E ----
+
+newdat3 <- expand_grid(
+  B=seq(from = -0.1,to=max(k.data$B), by=0.01),
+  A = mean(k.data$A),
+  C = mean(k.data$C),
+  D= mean(k.data$D),
+  E = mean(k.data$E),
+  F= mean(k.data$F),
+  G= mean(k.data$G),
+  H= mean(k.data$H),
+  Fish_abundance=mean(k.data$Fish_abundance))
+
+
+newdat3$fit <- predict(mod2b, type = "response",  newdata = newdat3)
+
+
+library(ggplot2)
+
+ggplot(k.data, aes(B, Fish_SpRich)) + 
+  geom_jitter(aes(fill=Ecosystem), height=0.3, width =0.2, color="black", pch=21, size=2.5)+
+  labs(x ="Emergent macrophytes
+(reeds, sedges, rushes)", y="Fish species richness") +
+  scale_fill_manual(values=c("#66C2A5", "coral"))+
+  geom_line(data = newdat3, 
+            aes(y=fit), 
+            color = "black", linewidth=1)+
+  theme_bw() +
+  theme(axis.text.y=element_text(colour = "black", size=13),
+        axis.text.x=element_text(colour = "black", size=13),
+        axis.title=element_text(size=15),
+        axis.line = element_line(colour = "black"),
+        axis.ticks =  element_line(colour = "black")) +
+  labs(fill='System type')
+
+
+
+
 # End
