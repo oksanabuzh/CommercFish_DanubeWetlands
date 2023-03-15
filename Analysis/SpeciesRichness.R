@@ -240,7 +240,7 @@ ggplot(k.data, aes(H, Fish_SpRich)) + geom_point()
 # mixed effects models
 
 mod2 = glmer(Fish_SpRich ~  Fish_abundance + 
-               A  + B + C  + D  + E  + (F ) + G  + H + 
+               A  + B + C  + D  + E  + F  + G  + H + 
                (1 | System), data = df2, family = poisson(link = "log"),
              control=glmerControl(optimizer="bobyqa", optCtrl=list(maxfun=100000)))
 
