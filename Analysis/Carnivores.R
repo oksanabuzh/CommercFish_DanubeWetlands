@@ -72,7 +72,7 @@ ggplot(k.data, aes(Macroph_Invas.Prcnt, CAR_prcnt)) + geom_point()
 # Model 1----
 # includes all non-correlated predictors
 
-mod1 <-  glmer ( CAR_prcnt ~ Ecosystem + Nat.LndCov.Ext + Nat.Littor.Zone + 
+mod1 <-  glmer (CAR_prcnt ~ Ecosystem + Nat.LndCov.Ext + Nat.Littor.Zone + 
                    Littor.Habitat.Ext +Littor.Habitat.Div + 
                    Macroph_Cover +  Macroph_Invas.Prcnt +
                     (1 | System), data = k.data,
@@ -108,17 +108,16 @@ write.csv(Anova(mod1, type="2"),  file = "Results/Chisq_glmm_Car_Mod1.csv")
 
 # Littor.Habitat.Ext ----
 
-newd <- expand_grid(
-  Littor.Habitat.Ext = min(k.data$Littor.Habitat.Ext*55):max(k.data$Littor.Habitat.Ext*55),
+newdat1 <- expand_grid (
+  Littor.Habitat.Ext=seq(from = min(k.data$Littor.Habitat.Ext),
+                         to=max(k.data$Littor.Habitat.Ext), 
+                         by=0.01),
   Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
   Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
   Littor.Habitat.Div= mean(k.data$Littor.Habitat.Div),
   Macroph_Cover= mean(k.data$Macroph_Cover), 
   Macroph_Invas.Prcnt= mean(k.data$Macroph_Invas.Prcnt),
   Ecosystem = unique(k.data$Ecosystem))
-
-newdat1 <- newd %>% 
-  mutate(Littor.Habitat.Ext=Littor.Habitat.Ext/55)
 
 newdat1$fit <- (predict(mod1, type = "response",  newdata = newdat1, re.form = NA))
 
@@ -128,7 +127,7 @@ fit_for_Littor.Habitat.Ext <- newdat1 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Littor.Habitat.Ext, CAR_prcnt)) + 
+Fig2b <- ggplot(k.data, aes(Littor.Habitat.Ext, CAR_prcnt)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.07, fill="red", color="black", pch=21, size=3)+
   labs(x ="Extent of littoral habitat", y="Proportion of carnivores") +
  # scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -143,10 +142,16 @@ ggplot(k.data, aes(Littor.Habitat.Ext, CAR_prcnt)) +
         axis.ticks =  element_line(colour = "black")) 
 
 
+Fig2b
+
+ggsave("Results/Fig2b.png", width = 10, height = 7, units = "cm")
+
+
+
 # Littor.Habitat.Div ----
 
-newd <- expand_grid(
-  Littor.Habitat.Div= (0.7*55):(3.5*55),
+newdat2 <- expand_grid(
+  Littor.Habitat.Div=seq(from = 0.8, to=3.5, by=0.01),
   Littor.Habitat.Ext = mean(k.data$Littor.Habitat.Ext),
   Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
   Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
@@ -154,8 +159,6 @@ newd <- expand_grid(
   Macroph_Invas.Prcnt= mean(k.data$Macroph_Invas.Prcnt),
   Ecosystem = unique(k.data$Ecosystem))
 
-newdat2 <- newd %>% 
-  mutate(Littor.Habitat.Div=Littor.Habitat.Div/55)
 
 newdat2$fit <- (predict(mod1, type = "response",  newdata = newdat2, re.form = NA))
 
@@ -165,7 +168,7 @@ fit_for_Littor.Habitat.Div <- newdat2 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Littor.Habitat.Div, CAR_prcnt)) + 
+Fig2a <- ggplot(k.data, aes(Littor.Habitat.Div, CAR_prcnt)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.4, fill="red", color="black", pch=21, size=3)+
   labs(x ="Diversity of littoral habitat", y="Proportion of carnivores") +
   # scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -182,19 +185,22 @@ ggplot(k.data, aes(Littor.Habitat.Div, CAR_prcnt)) +
 
 
 
+Fig2a
+
+ggsave("Results/Fig2a.png", width = 10, height = 7, units = "cm")
+
+
+
 # Macroph_Cover ----
 
-newd3 <- expand_grid(
-  Macroph_Cover= min(k.data$Macroph_Cover*55):max(k.data$Macroph_Cover*55), 
+newdat3 <- expand_grid(
+  Macroph_Cover=seq(from = min(k.data$Macroph_Cover),to=max(k.data$Macroph_Cover), by=0.01),
   Littor.Habitat.Div= mean(k.data$Littor.Habitat.Div),
   Littor.Habitat.Ext = mean(k.data$Littor.Habitat.Ext),
   Nat.LndCov.Ext = mean(k.data$Nat.LndCov.Ext),
   Nat.Littor.Zone = mean(k.data$Nat.Littor.Zone),
   Macroph_Invas.Prcnt= mean(k.data$Macroph_Invas.Prcnt),
   Ecosystem = unique(k.data$Ecosystem))
-
-newdat3 <- newd3 %>% 
-  mutate(Macroph_Cover=Macroph_Cover/55)
 
 newdat3$fit <- (predict(mod1, type = "response",  newdata = newdat3, re.form = NA))
 
@@ -204,7 +210,7 @@ fit_for_Macroph_Cover <- newdat3 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Macroph_Cover, CAR_prcnt)) + 
+Fig2c <- ggplot(k.data, aes(Macroph_Cover, CAR_prcnt)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.4, fill="red", color="black", pch=21, size=3)+
   labs(x ="Macrophyte cover", y="Proportion of carnivores") +
   # scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -219,6 +225,10 @@ ggplot(k.data, aes(Macroph_Cover, CAR_prcnt)) +
         axis.ticks =  element_line(colour = "black")) +
   labs(fill='System type')
 
+
+Fig2c
+
+ggsave("Results/Fig2c.png", width = 10, height = 7, units = "cm")
 
 #########-
 
@@ -284,8 +294,8 @@ write.csv(Anova(mod2, type="2"),  file = "Results/Chisq_glmm_CAR_Mod2.csv")
 
 ## E ----
 
-newd <- expand_grid(
-  D= (-0.1*55):max(k.data$D*55), 
+newdat3 <- expand_grid(
+  D=seq(from = min(k.data$D),to=max(k.data$D), by=0.01),
   A = mean(k.data$A),
   B = mean(k.data$B),
   C = mean(k.data$C),
@@ -294,16 +304,12 @@ newd <- expand_grid(
   G= mean(k.data$G),
   H= mean(k.data$H))
 
-newdat3 <- newd %>% 
-  mutate(D=D/55)
-
-
 newdat3$fit <- predict(mod2, type = "response",  newdata = newdat3, re.form = NA)
 
 
 library(ggplot2)
 
-ggplot(df2, aes(D, CAR_prcnt)) + 
+Fig2e <- ggplot(df2, aes(D, CAR_prcnt)) + 
   geom_jitter(aes(fill=Ecosystem), height=0, width =0, fill="red", color="black", pch=21, size=3)+
   labs(x ="Free-floating macrophytes", y="Proportion of carnivores") +
   geom_line(data = newdat3, 
@@ -317,6 +323,9 @@ ggplot(df2, aes(D, CAR_prcnt)) +
         axis.ticks =  element_line(colour = "black")) +
   labs(fill='System type')
 
+Fig2e
+
+ggsave("Results/Fig2e.png", width = 10, height = 7, units = "cm")
 
 
 # End

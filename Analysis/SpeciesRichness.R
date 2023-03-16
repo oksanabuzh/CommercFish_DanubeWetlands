@@ -169,7 +169,7 @@ fit_Macroph_Invas.Prcnt <- newdat1 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) + 
+Fig1c <- ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) + 
   geom_jitter(aes(fill=Ecosystem), width =1, color="black", pch=21, size=3)+
   labs(x ="Invasive macrophytes, %", y="Fish species richness") +
   scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -184,6 +184,11 @@ ggplot(k.data, aes(Macroph_Invas.Prcnt, Fish_SpRich)) +
         axis.ticks =  element_line(colour = "black")) +
   labs(fill='System type')
 
+Fig1c
+
+ggsave("Results/Fig1c.png", width = 10, height = 7, units = "cm")
+
+
 ####-
 # Ecosystem type----
 
@@ -195,8 +200,8 @@ Data_EcosType <- k.data %>% # the names of the new data frame and the data frame
             SE_PL = sd(Fish_SpRich)/sqrt(n())) 
 Data_EcosType
 
-ggplot(Data_EcosType) +
-  geom_bar( aes(x=Ecosystem, y=mean_PL, fill=Ecosystem), stat="identity", size=0.3, color="black") +
+Fig1d  <- ggplot(Data_EcosType) +
+  geom_bar( aes(x=Ecosystem, y=mean_PL, fill=Ecosystem), stat="identity", linewidth=0.3, color="black") +
   geom_errorbar(aes(x=Ecosystem,ymin = mean_PL - SE_PL, ymax = mean_PL + SE_PL), width=0.2)+
  scale_fill_manual(values=c("#66C2A5", "coral"))+
   labs(x ="System type", y="Fish species richness") +
@@ -207,6 +212,10 @@ ggplot(Data_EcosType) +
         axis.line = element_line(colour = "black"),
         axis.ticks =  element_line(colour = "black")) +
 labs(fill='System type')
+
+Fig1d
+
+ggsave("Results/Fig1d.png", width = 10, height = 7, units = "cm")
 
 
 #########-
@@ -322,7 +331,7 @@ newdat3$fit <- predict(mod2b, type = "response",  newdata = newdat3)
 
 library(ggplot2)
 
-ggplot(k.data, aes(B, Fish_SpRich)) + 
+Fig1f <- ggplot(k.data, aes(B, Fish_SpRich)) + 
   geom_jitter(aes(fill=Ecosystem), height=0.3, width =0.2, color="black", pch=21, size=2.5)+
   labs(x ="Emergent macrophytes
 (reeds, sedges, rushes)", y="Fish species richness") +
@@ -339,6 +348,10 @@ ggplot(k.data, aes(B, Fish_SpRich)) +
   labs(fill='System type')
 
 
+
+Fig1f
+
+ggsave("Results/Fig1f.png", width = 10, height = 7, units = "cm")
 
 
 # End

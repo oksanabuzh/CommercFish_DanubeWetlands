@@ -94,9 +94,9 @@ summary(mod1)
 car::vif(mod1)
 
 # residuals:
-plot(mod1b)
-qqnorm(resid(mod1b))
-qqline(resid(mod1b))
+plot(mod1)
+qqnorm(resid(mod1))
+qqline(resid(mod1))
 
 # overdispersion:
 resid_pearson <- residuals(mod1, type = "pearson")
@@ -170,7 +170,7 @@ Fig1a <- ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) +
 
 Fig1a
 
-ggsave(Fig1a, "Results/Fig1a.png", width = 15, height = 15, units = "cm")
+ggsave("Results/Fig1a.png", width = 10, height = 7, units = "cm")
 
 
 ## Macroph_Cover ----
@@ -193,7 +193,7 @@ fit_for_Macroph_Cover <- newdat2 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Macroph_Cover, Fish_abundance)) + 
+Fig1b <- ggplot(k.data, aes(Macroph_Cover, Fish_abundance)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.1, color="black", pch=21, size=2.5)+
   labs(x ="Macrophyte cover", y="Fish abundance") +
   scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -209,6 +209,9 @@ ggplot(k.data, aes(Macroph_Cover, Fish_abundance)) +
   labs(fill='System type')
 
 
+Fig1b
+
+ggsave("Results/Fig1b.png", width = 10, height = 7, units = "cm")
 
 
 
@@ -306,7 +309,7 @@ newdat3$fit <- as.vector(predict(mod2b, type = "response",  newdata = newdat3, l
 
 library(ggplot2)
 
-ggplot(k.data, aes(E, Fish_abundance)) + 
+Fig1e <- ggplot(k.data, aes(E, Fish_abundance)) + 
   geom_jitter(aes(fill=Ecosystem), height=0.5, width =0.5, color="black", pch=21, size=2.5)+
   labs(x ="Submerged fine and 
 dissected macrophytes", y="Fish abundance") +
@@ -322,5 +325,10 @@ dissected macrophytes", y="Fish abundance") +
         axis.ticks =  element_line(colour = "black")) +
   labs(fill='System type')
 
+Fig1e
 
-# End
+ggsave("Results/Fig1e.png", width = 10, height = 7, units = "cm")
+
+
+
+# End ----

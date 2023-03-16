@@ -181,8 +181,8 @@ write.csv(Anova(mod2, type="2"),  file = "Results/Chisq_glmm_INS_Mod2.csv")
 # Plot significant predictor:
 ## E ----
 
-newd <- expand_grid(
-  D= (-0.1*55):max(k.data$D*55), 
+newdat3 <- expand_grid(
+  D=seq(from = -0.1,to=max(k.data$D), by=0.01),
   A = mean(k.data$A),
   B = mean(k.data$B),
   C = mean(k.data$C),
@@ -191,16 +191,12 @@ newd <- expand_grid(
   G= mean(k.data$G),
   H= mean(k.data$H))
 
-newdat3 <- newd %>% 
-  mutate(D=D/55)
-
-
 newdat3$fit <- predict(mod2, type = "response",  newdata = newdat3, re.form = NA)
 
 
 library(ggplot2)
 
-ggplot(k.data, aes(D, INS_prcnt)) + 
+Fig2f <- ggplot(k.data, aes(D, INS_prcnt)) + 
   geom_jitter(aes(fill=Ecosystem), height=0.1, width =0.3, fill="#FFAA19", color="black", pch=21, size=3)+
   labs(x ="Free-floating macrophytes", y="Proportion of insectivores") +
   geom_line(data = newdat3, 
@@ -215,4 +211,9 @@ ggplot(k.data, aes(D, INS_prcnt)) +
   labs(fill='System type')
 
 
-# End
+Fig2f
+
+ggsave("Results/Fig2f.png", width = 10, height = 7, units = "cm")
+
+
+# End----
