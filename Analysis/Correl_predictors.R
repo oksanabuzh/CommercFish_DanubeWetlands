@@ -75,5 +75,6 @@ ggsave("Results/FigS1.png", width = 15, height = 15, units = "cm")
 
 x11(height=9,width=8.5)
 ggcorrplot(corl2,  type="lower", lab = TRUE)
+
 ggsave("Results/FigS2.png", width = 15, height = 15, units = "cm")
 

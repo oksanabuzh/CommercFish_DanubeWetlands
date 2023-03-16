@@ -14,6 +14,19 @@ library(MuMIn)
 library(MASS)
 library(car)
 
+sessionInfo()
+# R version 4.2.2 (2022-10-31 ucrt)
+# Platform: x86_64-w64-mingw32/x64
+
+# [1] car_3.1-1       carData_3.0-5   MASS_7.3-58.1   MuMIn_1.47.1    lme4_1.1-31     Matrix_1.5-1   
+# [7] lubridate_1.9.2 forcats_1.0.0   stringr_1.5.0   dplyr_1.1.0     purrr_1.0.1     readr_2.1.4    
+# [13] tidyr_1.3.0     tibble_3.1.8    ggplot2_3.4.1   tidyverse_2.0.0
+
+citation()
+citation("lme4")
+citation("MASS")
+citation("MuMIn")
+
 # Data----
 
 
@@ -140,7 +153,7 @@ fit_for_Littor.Habitat.Ext <- newdat1 %>%
 
 library(ggplot2)
 
-ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) + 
+Fig1a <- ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) + 
   geom_jitter(aes(fill=Ecosystem), width =0.2, color="black", pch=21, size=3)+
   labs(x ="Extent of littoral habitat", y="Fish abundance") +
   scale_fill_manual(values=c("#66C2A5", "coral"))+
@@ -155,6 +168,9 @@ ggplot(k.data, aes(Littor.Habitat.Ext, Fish_abundance)) +
         axis.ticks =  element_line(colour = "black")) +
   labs(fill='System type')
 
+Fig1a
+
+ggsave(Fig1a, "Results/Fig1a.png", width = 15, height = 15, units = "cm")
 
 
 ## Macroph_Cover ----

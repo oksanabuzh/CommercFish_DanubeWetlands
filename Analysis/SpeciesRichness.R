@@ -108,7 +108,7 @@ ggplot(k.data,aes(x=System,y=Fish_SpRich,col=System)) + geom_jitter() +
 ranef(mod1)
 # we see very small coefficients (all are 0), meaning that there's no really systematic effect coming from our random effect "System"
 r.squaredGLMM(mod1)
-# R2c is same as R2m, meaning that random effect expalins 0 variance in our responce variable
+# R2c is same as R2m, meaning that random effect expalined 0 variance in our responce variable
 
 # we can also test random effect:
 # specify model without random effect

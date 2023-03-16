@@ -77,7 +77,7 @@ mod1 <-  glmer ( CAR_prcnt ~ Ecosystem + Nat.LndCov.Ext + Nat.Littor.Zone +
                    Macroph_Cover +  Macroph_Invas.Prcnt +
                     (1 | System), data = k.data,
                   control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=100000)),
-                  family = "binomial", weights = Fish_abundance)
+                  family = binomial(link = "logit"), weights = Fish_abundance)
 
 summary(mod1)
 
