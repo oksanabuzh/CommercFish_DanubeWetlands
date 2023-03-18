@@ -1,9 +1,8 @@
-# NMDS and PERMANOVA
-# Buzhdygan
+
+# RDA analysis
 
 rm(list=ls(all=TRUE))
-setwd("C:/Users/Oksana/Dropbox/2020/Manuscripts/Serbia_WETLANDS/Commersial_Fish")
-Index <- read.xlsx( "comer_fish_1.xlsx")
+
 
 Index <-read.csv( "Data/comer_fish.csv")
 
@@ -14,11 +13,7 @@ names(Macr_sp_composition)
 
 library(vegan)
 
-Index1 <- Index [-c(6, 7, 36, 37, 39, 40, 41, 42, 53), ] # remove zeros fish species
 Index2 <- Index [-c(6, 7, 36, 37, 39, 40, 41, 42, 53, 13, 14, 17, 18), ] # remove zeros fish species and zeros macrophytes
-
-fish_sp_comp <-(Index1[,43:51])# community matrix based on fish abundance 
-names(fish_sp_comp)
 
 fish_sp_comp2 <-(Index2[,43:51])# community matrix based on fish abundance 
 names(fish_sp_comp2)
@@ -26,11 +21,14 @@ names(fish_sp_comp2)
 
 
 Macr_sp_comp <- Macr_sp_composition [-c(6, 7, 36, 37, 39, 40, 41, 42, 53, 13, 14, 17, 18), ] # remove zeros fish species and zeros macrophytes
+
 # presence-absance transformation to calculate species number per cite
 Macr_sp_comp_pa <- decostand(Macr_sp_comp, 'pa')
+
 #calculate sum per species
 Macr_sp_sum <- apply (Macr_sp_comp_pa,2,sum)
 sort(Macr_sp_sum)
+
 #removal of rare species
 #remove species that occure at less than 2 sites
 Macr.sp.com <- Macr_sp_comp [, Macr_sp_sum>0.9 ]
